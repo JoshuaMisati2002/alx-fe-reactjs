@@ -11,7 +11,7 @@ function App() {
   return (
     <>
     <div>
-      <UserProfile name="Joshua" age={23} bio="I live in Nairobi"/>
+      <UserProfile name="Joshua" Age={23} Bio="I live in Nairobi"/>
     </div>
       <div>
         <WelcomeMessage />
