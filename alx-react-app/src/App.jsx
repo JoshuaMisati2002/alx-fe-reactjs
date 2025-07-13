@@ -11,14 +11,14 @@ function App() {
   return (
     <>
     <div>
-      <UserProfile name="Joshua" Age={23} Bio="I live in Nairobi"/>
+      <UserProfile name="Alice" age="25" bio="Loves hiking and photography" />
     </div>
       <div>
         <WelcomeMessage />
         <Header />
         <MainContent />
         <Footer />
-        <UserProfile />
+       
       </div>
     </>
   )
