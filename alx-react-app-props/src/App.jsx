@@ -10,9 +10,9 @@ import UserContext from './components/UserContext'
 function App() {
  const userData = { name: "Jane Doe", email: "jane.doe@example.com" };
 
- <UserContext.provider value={userData}>
+ <UserContext.Provider value={userData}>
   return <ProfilePage userData={userData} />; 
-  </UserContext.provider>
+  </UserContext.Provider>
 }
 
 export default App
