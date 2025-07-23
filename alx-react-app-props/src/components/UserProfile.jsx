@@ -1,10 +1,11 @@
-import React from 'react';
-function UserProfile (props){
+import React,{useContext} from 'react';
+import UserContext from './UserContext';
+function UserProfile (){
     return(
         <>
-        <h2>{props.name}</h2>
-        <p>Age: {props.age}</p>
-        <p>Bio: {props.bio}</p>
+        <h2></h2>
+        <p>Age: </p>
+        <p>Bio: </p>
         </>
     )
 }
