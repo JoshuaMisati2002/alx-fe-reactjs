@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // Define the Navbar component
 const Navbar = () => {
   return (
-    <nav>
+    <nav style={{ padding: '10px', backgroundColor: '#f8f9fa',display: 'flex', justifyContent: 'space-around' }}>
       <div>
         <div>
           {/* Using Link components for navigation */}
