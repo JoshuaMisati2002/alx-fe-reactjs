@@ -1,29 +1,21 @@
-import React from 'react'
-import './App.css'
-import AddRecipeForm from './components/AddRecipeForm'
-import RecipeList from './components/RecipeList'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import AddRecipeForm from './components/AddRecipeForm';
+import RecipeList from './components/RecipeList';
+import RecipeDetails from './components/RecipeDetails';
+import EditRecipeForm from './components/EditRecipeForm';
 
 function App() {
-
-
   return (
     <>
- 
-      <h1>Vite + Reacts</h1>
-      <AddRecipeForm />
-      <RecipeList />
-      <div className="card">
-    
-       
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Vite + React Recipes</h1>
+      <Routes>
+        <Route path="/" element={<><AddRecipeForm /><RecipeList /></>} />
+        <Route path="/recipe/:id" element={<RecipeDetails />} />
+        <Route path="/edit/:id" element={<EditRecipeForm />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
