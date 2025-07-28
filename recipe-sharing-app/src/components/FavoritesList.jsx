@@ -8,7 +8,7 @@ const FavoritesList = () => {
 
   return (
     <div>
-      <h2>❤️ Favorite Recipes</h2>
+      <h2> Favorite Recipes</h2>
       {favorites.length === 0 ? (
         <p>No favorite recipes yet.</p>
       ) : (
@@ -17,7 +17,7 @@ const FavoritesList = () => {
             <h3>{recipe.title}</h3>
             <p>{recipe.description}</p>
             <Link to={`/recipe/${recipe.id}`}>View Details</Link>
-            <button onClick={() => removeFromFavorites(recipe.id)}  style={{ backgroundColor: 'red', color: 'white', marginTop: '10px' }}>Remove</button>
+            <button onClick={() => removeFromFavorites(recipe.id)}>Remove</button>
           </div>
         ))
       )}

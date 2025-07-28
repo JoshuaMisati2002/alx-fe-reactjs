@@ -76,6 +76,3 @@ export const useRecipeStore = create((set, get) => ({
     set({ recommendations });
   },
 }));
-if (typeof window !== 'undefined') {
-  window.recipeStore = useRecipeStore;
-}
