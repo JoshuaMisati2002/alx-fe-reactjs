@@ -4,10 +4,12 @@ import AddRecipeForm from './components/AddRecipeForm';
 import RecipeList from './components/RecipeList';
 import RecipeDetails from './components/RecipeDetails';
 import EditRecipeForm from './components/EditRecipeForm';
+import SearchBar from './components/SearchBar';
 
 function App() {
   return (
     <>
+     <SearchBar />
       <h1>Vite + React Recipes</h1>
       <Routes>
         <Route path="/" element={<><AddRecipeForm /><RecipeList /></>} />
