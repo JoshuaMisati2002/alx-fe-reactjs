@@ -4,13 +4,14 @@ import './App.css'
 
 function App() {
 
+  const githubApiKey = import.meta.env.VITE_GITHUB_API_KEY;
   return (
     <>
 
       <h1>Vite + React</h1>
     
         <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
+          Edit <code>src/App.jsx</code> and save to test HMRssss
         </p>
      
       <p className="read-the-docs">
