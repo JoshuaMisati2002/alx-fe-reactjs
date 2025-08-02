@@ -8,16 +8,12 @@ function App() {
   const githubApiKey = import.meta.env.VITE_GITHUB_API_KEY;
   return (
     <>
-       <Search />
-      <h1>Vite + React</h1>
     
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMRssss
-        </p>
+    
+     <Routes>
+        <Route path="/" element={<Search />} />
+     </Routes>
      
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }

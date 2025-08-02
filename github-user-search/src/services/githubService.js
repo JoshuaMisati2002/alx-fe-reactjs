@@ -6,29 +6,61 @@ const GITHUB_API_KEY = import.meta.env.VITE_GITHUB_API_KEY;
 // Base URL for the GitHub API
 const API_BASE_URL = 'https://api.github.com';
 
-// Set up the Axios instance with a base URL and default headers
+// Set up the Axios instance
 const githubApi = axios.create({
   baseURL: API_BASE_URL,
   headers: {
+    ...(GITHUB_API_KEY && {
+      Authorization: `token ${GITHUB_API_KEY}`,
+    }),
   },
 });
 
 /**
- * Fetches user data from the GitHub API.
- * @param {string} username The GitHub username to search for.
- * @returns {Promise<object>} A promise that resolves to the user data.
+ * Fetches full profile data for a given username.
+ * @param {string} username
+ * @returns {Promise<object>}
  */
 export const fetchUserData = async (username) => {
   try {
     const response = await githubApi.get(`/users/${username}`);
-    // Axios automatically parses the JSON, so the data is in response.data
     return response.data;
   } catch (error) {
-    // Handle specific errors, like a user not found (404)
-    if (error.response && error.response.status === 404) {
+    if (error.response?.status === 404) {
       throw new Error(`User "${username}" not found.`);
     }
-    // Re-throw the error to be handled by the component
     throw error;
   }
 };
+
+/**
+ * Advanced user search using GitHub's Search API
+ * @param {Object} params - Search parameters
+ * @param {string} [params.username] - GitHub username or keywords
+ * @param {string} [params.location] - Location (optional)
+ * @param {number} [params.minRepos] - Minimum number of public repositories
+ * @param {number} [params.page=1] - Page number for pagination
+ * @returns {Promise<object[]>} - Array of users matching the criteria
+ */
+export const searchUsers = async ({ username, location, minRepos, page = 1 }) => {
+  let query = '';
+
+  if (username) query += `${username} `;
+  if (location) query += `location:${location} `;
+  if (minRepos) query += `repos:>=${minRepos} `;
+
+  try {
+    const response = await githubApi.get('/search/users', {
+      params: {
+        q: query.trim(),
+        page,
+        per_page: 30, // GitHub default
+      },
+    });
+
+    return response.data.items; // summary info for users
+  } catch (error) {
+    throw new Error('Failed to search users. ' + (error.message || ''));
+  }
+};
+

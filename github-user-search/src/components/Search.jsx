@@ -1,98 +1,167 @@
 import React, { useState } from 'react';
-// Import the API service function i created
-import { fetchUserData } from '../services/githubService'; 
+import { searchUsers } from '../services/githubService';
 
 function Search() {
-  // State to hold the value of the input field
   const [username, setUsername] = useState('');
-
-  // State to store the user data returned from the API
-  const [userData, setUserData] = useState(null);
-
-  // State to manage the loading status of the API call
+  const [location, setLocation] = useState('');
+  const [minRepos, setMinRepos] = useState('');
+  const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  // State to store any error message
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
-  // Function to handle changes in the input field
-  const handleInputChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  // Function to handle form submission (now an async function)
-  const handleFormSubmit = async (event) => {
-    // Prevent the default form submission behavior (which reloads the page)
-    event.preventDefault();
-
-    // Reset states before a new search
-    setUserData(null);
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setResults([]);
     setError(null);
     setIsLoading(true);
+    setPage(1);
 
     try {
-      // Call the API service function with the username
-      const data = await fetchUserData(username);
-      // If the call is successful, set the user data
-      setUserData(data);
+      const users = await searchUsers({
+        username,
+        location,
+        minRepos,
+        page: 1
+      });
+
+      setResults(users);
+      setHasMore(users.length === 30); // GitHub API returns max 30 by default
     } catch (err) {
-      // If there's an error, set the error message
-      // The `||` operator provides a fallback message if `err.message` is not available
-      setError(err.message || 'An error occurred.');
+      setError(err.message || 'Something went wrong.');
     } finally {
-      // This block always runs after try or catch, so we turn off the loading state
       setIsLoading(false);
     }
   };
 
-  // Helper function for conditional rendering of results
+  const loadMore = async () => {
+    const nextPage = page + 1;
+    setIsLoading(true);
+
+    try {
+      const users = await searchUsers({
+        username,
+        location,
+        minRepos,
+        page: nextPage
+      });
+
+      setResults(prev => [...prev, ...users]);
+      setPage(nextPage);
+      setHasMore(users.length === 30);
+   } catch (err) {
+  setError(err.message || 'Failed to load more.');
+} finally {
+      setIsLoading(false);
+    }
+  };
+
   const renderResults = () => {
-    if (isLoading) {
-      return <p>Loading...</p>;
-    }
+    if (isLoading && results.length === 0) return <p className="text-blue-500 mt-4">Loading...</p>;
+    if (error) return <p className="text-red-500 mt-4">{error}</p>;
 
-    if (error) {
-      return <p>Looks like we cant find the user. Error: {error}</p>;
-    }
-
-    if (userData) {
+    if (results.length > 0) {
       return (
-        <div className="user-profile">
-          <img 
-            src={userData.avatar_url} 
-            alt={`${userData.login}'s avatar`} 
-            className="avatar" 
-          />
-          <h2>{userData.name || userData.login}</h2>
-          <p>{userData.bio}</p>
-          <a href={userData.html_url} target="_blank" rel="noopener noreferrer">
-            View GitHub Profile
-          </a>
+        <div className="mt-6 w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {results.map((user) => (
+            <div
+              key={user.id}
+              className="p-4 bg-white shadow rounded flex items-center space-x-4"
+            >
+              <img
+                src={user.avatar_url}
+                alt={user.login}
+                className="w-16 h-16 rounded-full"
+              />
+              <div>
+                <h2 className="text-lg font-semibold">{user.login}</h2>
+                <p>
+                  <a
+                    href={user.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    View Profile
+                  </a>
+                </p>
+              </div>
+            </div>
+          ))}
+
+          {hasMore && (
+            <button
+              onClick={loadMore}
+              className="col-span-full mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Load More
+            </button>
+          )}
         </div>
       );
     }
 
-    // Default state: return nothing when no search has been performed
     return null;
   };
 
   return (
-    <div className="search-container">
-      <form onSubmit={handleFormSubmit}>
-        <input
-          type="text"
-          value={username}
-          onChange={handleInputChange}
-          placeholder="Enter GitHub username"
-          aria-label="GitHub Username"
-        />
-        <button type="submit">Search</button>
+    <div className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
+      <form
+        onSubmit={handleFormSubmit}
+        className="bg-white p-6 rounded-lg shadow-md w-full max-w-xl space-y-4"
+      >
+        <h1 className="text-2xl font-bold text-center mb-4">🔍 GitHub User Search</h1>
+
+        <div>
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+            GitHub Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+            Location (optional)
+          </label>
+          <input
+            id="location"
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="minRepos" className="block text-sm font-medium text-gray-700">
+            Minimum Public Repositories (optional)
+          </label>
+          <input
+            id="minRepos"
+            type="number"
+            min="0"
+            value={minRepos}
+            onChange={(e) => setMinRepos(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring focus:ring-blue-300"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+        >
+          Search
+        </button>
       </form>
-      
-      {/* Display the results based on the state */}
-      <div className="results-container">
-        {renderResults()}
-      </div>
+
+      {renderResults()}
     </div>
   );
 }
