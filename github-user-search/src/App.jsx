@@ -1,13 +1,14 @@
 import React from 'react'
 import {Routes, Route,Link} from 'react-router-dom'
 import './App.css'
+import Search from './components/Search'
 
 function App() {
 
   const githubApiKey = import.meta.env.VITE_GITHUB_API_KEY;
   return (
     <>
-
+       <Search />
       <h1>Vite + React</h1>
     
         <p>
