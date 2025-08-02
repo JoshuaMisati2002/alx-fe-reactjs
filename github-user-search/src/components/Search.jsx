@@ -52,7 +52,7 @@ function Search() {
     }
 
     if (error) {
-      return <p>Looks like we can't find the user. Error: {error}</p>;
+      return <p>Looks like we cant find the user. Error: {error}</p>;
     }
 
     if (userData) {
