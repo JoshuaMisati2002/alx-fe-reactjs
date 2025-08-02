@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { searchUsers } from '../services/githubService';
-import { fetchUserData} from '../services/githubService';
+import { searchUsers, fetchUserData } from '../services/githubService';
+
 function Search() {
   const [username, setUsername] = useState('');
   const [location, setLocation] = useState('');
@@ -11,12 +11,16 @@ function Search() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
 
+  
+  const [detailedProfile, setDetailedProfile] = useState(null);
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setResults([]);
     setError(null);
     setIsLoading(true);
     setPage(1);
+    setDetailedProfile(null);
 
     try {
       const users = await searchUsers({
@@ -50,12 +54,28 @@ function Search() {
       setResults(prev => [...prev, ...users]);
       setPage(nextPage);
       setHasMore(users.length === 30);
-   } catch (err) {
-  setError(err.message || 'Failed to load more.');
-} finally {
+    } catch (err) {
+      setError(err.message || 'Failed to load more.');
+    } finally {
       setIsLoading(false);
     }
   };
+
+const handleUserClick = async (user) => {
+  setDetailedProfile(null);
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const fullProfile = await fetchUserData(user.login);
+    setDetailedProfile(fullProfile);
+  } catch {
+    setError('Failed to fetch detailed profile.');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const renderResults = () => {
     if (isLoading && results.length === 0) return <p className="text-blue-500 mt-4">Loading...</p>;
@@ -67,7 +87,8 @@ function Search() {
           {results.map((user) => (
             <div
               key={user.id}
-              className="p-4 bg-white shadow rounded flex items-center space-x-4"
+              className="p-4 bg-white shadow rounded flex items-center space-x-4 cursor-pointer hover:bg-gray-50"
+              onClick={() => handleUserClick(user)}
             >
               <img
                 src={user.avatar_url}
@@ -82,6 +103,7 @@ function Search() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:underline"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     View Profile
                   </a>
@@ -162,6 +184,25 @@ function Search() {
       </form>
 
       {renderResults()}
+
+      {detailedProfile && (
+        <div className="mt-6 bg-white p-6 rounded shadow max-w-xl w-full">
+          <h2 className="text-xl font-bold mb-2">{detailedProfile.name || detailedProfile.login}</h2>
+          {detailedProfile.bio && <p className="mb-2">{detailedProfile.bio}</p>}
+          <p><strong>Location:</strong> {detailedProfile.location || 'N/A'}</p>
+          <p><strong>Public Repos:</strong> {detailedProfile.public_repos}</p>
+          <p><strong>Followers:</strong> {detailedProfile.followers}</p>
+          <p><strong>Following:</strong> {detailedProfile.following}</p>
+          <a
+            href={detailedProfile.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 mt-2 inline-block hover:underline"
+          >
+            Visit GitHub Profile →
+          </a>
+        </div>
+      )}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import axios from 'axios';
 const GITHUB_API_KEY = import.meta.env.VITE_GITHUB_API_KEY;
 
 // Base URL for the GitHub API
-const API_BASE_URL = 'https://api.github.com/search/users?q';
+const API_BASE_URL = 'https://api.github.com';
 
 // Set up the Axios instance
 const githubApi = axios.create({
@@ -29,7 +29,7 @@ export const fetchUserData = async (username) => {
     if (error.response?.status === 404) {
       throw new Error(`User "${username}" not found.`);
     }
-    throw error;
+    throw new Error(error.message || 'Failed to fetch user data.');
   }
 };
 
@@ -54,11 +54,11 @@ export const searchUsers = async ({ username, location, minRepos, page = 1 }) =>
       params: {
         q: query.trim(),
         page,
-        per_page: 30, // GitHub default
+        per_page: 30,
       },
     });
 
-    return response.data.items; // summary info for users
+    return response.data.items;
   } catch (error) {
     throw new Error('Failed to search users. ' + (error.message || ''));
   }
