@@ -1,19 +1,14 @@
 
 import './App.css'
+import UserProfile from './components/UserProfile'
 
 function App() {
  
 
   return (
     <>
-
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <UserProfile />
+     
     </>
   )
 }
