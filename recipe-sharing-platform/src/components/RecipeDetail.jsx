@@ -16,28 +16,45 @@ export default function RecipeDetail() {
   }, [id]);
 
   if (!recipe) {
-    return <p className="p-6 text-gray-500">Loading recipe details...</p>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p className="text-gray-500 text-lg">Loading recipe details...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <img
-        src={recipe.image}
-        alt={recipe.title}
-        className="w-full h-64 object-cover rounded-lg shadow-md"
-      />
-      <h1 className="text-3xl font-bold mt-4">{recipe.title}</h1>
-      <p className="mt-2 text-gray-600">{recipe.summary}</p>
+    <div className="max-w-5xl mx-auto p-4 md:p-8">
+      {/* Recipe Header Section */}
+      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+        <img
+          src={recipe.image}
+          alt={recipe.title}
+          className="w-full h-64 md:h-96 object-cover"
+        />
+        <div className="p-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800">{recipe.title}</h1>
+          <p className="mt-3 text-gray-600 text-base md:text-lg">{recipe.summary}</p>
+        </div>
+      </div>
 
-      <h2 className="text-xl font-semibold mt-6">Ingredients</h2>
-      <ul className="list-disc list-inside mt-2 text-gray-700">
-        {recipe.ingredients.map((item, idx) => (
-          <li key={idx}>{item}</li>
-        ))}
-      </ul>
+      {/* Ingredients Section */}
+      <div className="mt-8 grid md:grid-cols-2 gap-6">
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Ingredients</h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-700">
+            {recipe.ingredients.map((item, idx) => (
+              <li key={idx}>{item}</li>
+            ))}
+          </ul>
+        </div>
 
-      <h2 className="text-xl font-semibold mt-6">Instructions</h2>
-      <p className="mt-2 text-gray-700">{recipe.instructions}</p>
+        {/* Instructions Section */}
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Instructions</h2>
+          <p className="text-gray-700 leading-relaxed">{recipe.instructions}</p>
+        </div>
+      </div>
     </div>
   );
 }

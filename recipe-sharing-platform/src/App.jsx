@@ -1,6 +1,6 @@
 import './App.css'
 import HomePage from './components/Homepage'
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes,BrowserRouter,Route, Link } from "react-router-dom";
 import RecipeDetail from "./components/RecipeDetail.jsx";
 
 function App() {
