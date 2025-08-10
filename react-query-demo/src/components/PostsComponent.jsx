@@ -14,12 +14,15 @@ function PostsComponent() {
     isLoading,
     isError,
     error,
-    refetch, // function to manually refetch
-    isFetching, // boolean: true when refetching
+    refetch,
+    isFetching,
   } = useQuery({
     queryKey: ["posts"],
     queryFn: fetchPosts,
-    staleTime: 1000 * 60 * 1, // 1 minute cache: won't refetch if visited again within 1 minute
+    staleTime: 1000 * 60 * 1, // fresh for 1 minute
+    cacheTime: 1000 * 60 * 5, // keep cache in memory for 5 minutes
+    refetchOnWindowFocus: false, // disable auto refetch when tab is focused
+    keepPreviousData: true, // preserve old data when fetching new
   });
 
   if (isLoading) return <p>Loading posts...</p>;
@@ -29,7 +32,6 @@ function PostsComponent() {
     <div>
       <h1>Posts</h1>
 
-      {/* Manual Refetch Button */}
       <button
         onClick={() => refetch()}
         style={{
@@ -54,4 +56,5 @@ function PostsComponent() {
 }
 
 export default PostsComponent;
+
 
