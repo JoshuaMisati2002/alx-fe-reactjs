@@ -3,6 +3,7 @@ import { useState } from "react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
+import BlogPost from "./pages/BlogPost";
 
 function Home() {
   return <h1>Home Page</h1>;
@@ -17,7 +18,8 @@ function App() {
         <nav>
           <Link to="/">Home</Link> |{" "}
           <Link to="/profile">Profile</Link> |{" "}
-          <Link to="/login">Login</Link>
+          <Link to="/login">Login</Link> |{" "}
+          <Link to="/blog/1">Blog Post 1</Link>
         </nav>
 
         <Routes>
@@ -34,6 +36,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+          {/* Dynamic Blog Route */}
+          <Route path="/blog/:id" element={<BlogPost />} />
         </Routes>
       </div>
     </BrowserRouter>
@@ -41,6 +45,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
